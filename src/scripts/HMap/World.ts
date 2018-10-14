@@ -6,11 +6,10 @@ export default class World {
 	scene: Three.Scene
 	camera: Three.Camera
 	renderer: Three.WebGLRenderer
-
-	cachedFiles: {[path:string]:any}
+	loader: any
 
 	constructor(){
-		this.cachedFiles = {}
+		this.loader = new FBXLoader()
 		this.scene = new Three.Scene()
 		this.initLight()
 		this.debugCube()
@@ -24,15 +23,25 @@ export default class World {
 		this.renderer.render( this.scene, this.camera );
 	}
 
-	addFromFile = (path:string):Promise<string> => {
-		if(this.cachedFiles[path]){
-			this.scene.add(this.cachedFiles[path])
-			return Promise.resolve("")
+	applyProperties(object, props){
+		const p = {...props.base, ...props}
+		if(p.color){
+			object.material.color = new Three.Color(p.color)
 		}
+
+	}
+
+	addFromFile = (path:string, props):Promise<string> => {
 		return new Promise((resolve, reject) => {
-			const loader = new FBXLoader()
-			loader.load(path, (object) => {
-				this.cachedFiles[path] = object
+			this.loader.load(path, (object) => {
+				
+				for(const child of object.children) {
+					//For some reason all names have 'Model' appended
+					const name = child.name.slice(0,-5)
+					if(props[name])
+						this.applyProperties(child, props[name])
+				}
+
 				this.scene.add( object );
 				resolve("")
 			}, function(){},
@@ -65,16 +74,17 @@ export default class World {
 	}
 
 	initLight(){
-		const light = new Three.DirectionalLight( 0xffddee, 0.7 )
+		const light = new Three.DirectionalLight( 0xffffff, 0.7 )
 		light.position.y = 10
 		light.position.x = 2
 		this.scene.add(light)
 
-		const ambient = new Three.AmbientLight( 0xffddee, 0.3 )
+		const ambient = new Three.AmbientLight( 0xffffff, 0.3 )
+		this.scene.add(ambient)
 	}
 	initCamera(){
 		this.camera = new Three.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.01, 10000 );
-		this.camera.position.set(0, 10, 10);
+		this.camera.position.set(0, 20, 20);
 		this.camera.up.set(0, 1, 0);
 		this.camera.lookAt(new Three.Vector3(0, 0, 0));
 	}

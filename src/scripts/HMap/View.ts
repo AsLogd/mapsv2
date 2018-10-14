@@ -39,8 +39,11 @@ export default class View{
 				ps.push(formatted)
 			}
 			
+			const addFromFileWithProps = (path) => 
+				world.addFromFile(path, this.config.props)
+
 			return Promise.all(
-				ps.map(world.addFromFile)
+				ps.map(addFromFileWithProps)
 			)
 		}
 		else if(typeof this.config.render === "string") {
@@ -49,7 +52,7 @@ export default class View{
 				this.config.render,
 				this.params
 			)
-			return world.addFromFile(formatted)
+			return world.addFromFile(formatted, this.config.props)
 		}
 		else {
 			console.error("Render value not compatible:" + this.config.render)

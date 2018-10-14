@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			color: "#5F5"
 		},
 		clickable: {
-			color: "#0F0",
+			color: "green",
 			cursor: "pointer"
 		},
 		closed: {
@@ -66,9 +66,9 @@ document.addEventListener('DOMContentLoaded', () => {
 			title: "{building}",
 			view: BuildingView,
 			render: {
-				f1: "assets/models/{building}-0.fbx",
-				f2: "assets/models/{building}-1.fbx",
-				f3: "assets/models/{building}-2.fbx",
+				"0": "assets/models/{building}-0.fbx",
+				"1": "assets/models/{building}-1.fbx",
+				"2": "assets/models/{building}-2.fbx",
 			},
 			props: function(params){
 				return buildingProps[params.building]
@@ -77,10 +77,11 @@ document.addEventListener('DOMContentLoaded', () => {
 		"/": {
 			title: "UPC",
 			view: RootView,
-			render: "upc.fbx",
+			render: "assets/models/upc.fbx",
 			props: {
 				"a6": {
 					base: bases.clickable,
+					title: "A6",
 					linkTo: "/A6"
 				},
 				"vertex": {
