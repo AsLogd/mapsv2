@@ -28,14 +28,13 @@ export default class HMap{
 	}
 
 	setView(matching) {
-		this.showLoading().then(()=>{
-			// Download files
-			// Instance view, render
+		this.world.fadeCanvas().then(()=>{
+			this.world.emtpyScene()
 			this.view = new (matching.props.view)(matching)
 			this.view.init(this.world).then(()=>{
-				this.hideLoading()	
+				this.hideLoading()
+				this.world.showCanvas()
 			})
-			
 		})
 	}
 

@@ -54,7 +54,15 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	}
 	const conf = {
-		"/:building/:floor?": {
+		"/:building/:floor": {
+			title: "{building}",
+			view: BuildingView,
+			render: "assets/models/{building}-{floor}.fbx",
+			props: function(params){
+				return buildingProps[params.building][params.floor]
+			}
+		},
+		"/:building": {
 			title: "{building}",
 			view: BuildingView,
 			render: {
@@ -63,12 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				f3: "assets/models/{building}-2.fbx",
 			},
 			props: function(params){
-				if(params.floor) {
-					return buildingProps[params.building][params.floor]
-				}
-				else {
-					return buildingProps[params.building]
-				}
+				return buildingProps[params.building]
 			}
 		},
 		"/": {
