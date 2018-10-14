@@ -38,11 +38,10 @@ export default class View{
 				)
 				ps.push(formatted)
 			}
-			/*
+			
 			return Promise.all(
 				ps.map(world.addFromFile)
-			)*/
-			return world.addFromFile(ps[2])
+			)
 		}
 		else if(typeof this.config.render === "string") {
 			//Path may contains parameters

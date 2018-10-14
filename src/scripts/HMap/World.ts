@@ -31,7 +31,7 @@ export default class World {
 		this.renderer.render( this.scene, this.camera );
 	}
 
-	addFromFile(path:string):Promise<string>{
+	addFromFile = (path:string):Promise<string> => {
 		return new Promise((resolve, reject) => {
 			const loader = new FBXLoader()
 			loader.load(path, (object) => {

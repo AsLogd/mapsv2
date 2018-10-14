@@ -33,7 +33,6 @@ export default class HMap{
 			// Instance view, render
 			this.view = new (matching.props.view)(matching)
 			this.view.init(this.world).then(()=>{
-				console.log("init finished")
 				this.hideLoading()	
 			})
 			
