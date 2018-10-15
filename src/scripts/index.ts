@@ -54,38 +54,43 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	}
 	const conf = {
-		"/:building/:floor": {
-			title: "{building}",
-			view: BuildingView,
-			render: "assets/models/{building}-{floor}.fbx",
-			props: function(params){
-				return buildingProps[params.building][params.floor]
-			}
+		assets:{
+			defaultFont: "assets/fonts/gotham.json"			
 		},
-		"/:building": {
-			title: "{building}",
-			view: BuildingView,
-			render: {
-				"0": "assets/models/{building}-0.fbx",
-				"1": "assets/models/{building}-1.fbx",
-				"2": "assets/models/{building}-2.fbx",
+		routes:{
+			"/:building/:floor": {
+				title: "{building}",
+				view: BuildingView,
+				render: "assets/models/{building}-{floor}.fbx",
+				props: function(params){
+					return buildingProps[params.building][params.floor]
+				}
 			},
-			props: function(params){
-				return buildingProps[params.building]
-			}
-		},
-		"/": {
-			title: "UPC",
-			view: RootView,
-			render: "assets/models/upc.fbx",
-			props: {
-				"a6": {
-					base: bases.clickable,
-					title: "A6",
-					linkTo: "/A6"
+			"/:building": {
+				title: "{building}",
+				view: BuildingView,
+				render: {
+					"0": "assets/models/{building}-0.fbx",
+					"1": "assets/models/{building}-1.fbx",
+					"2": "assets/models/{building}-2.fbx",
 				},
-				"vertex": {
-					title: "Vèrtex"
+				props: function(params){
+					return buildingProps[params.building]
+				}
+			},
+			"/": {
+				title: "UPC",
+				view: RootView,
+				render: "assets/models/upc.fbx",
+				props: {
+					"a6": {
+						base: bases.clickable,
+						title: "A6",
+						linkTo: "/A6"
+					},
+					"vertex": {
+						title: "Vèrtex"
+					}
 				}
 			}
 		}

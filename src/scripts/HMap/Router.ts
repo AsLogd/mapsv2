@@ -1,17 +1,18 @@
 import * as pathToRegexp from "path-to-regexp"
+import {ViewConfig} from "./View"
 
 export default class Router {
 	/**
 	 * Tries to match the given hash with the routes
 	 * in config. Returns on first match
 	 *
-	 * @arg {string} config - Route properties {route: props}
+	 * @arg {{[route:string]: ViewConfig}} routes - Routes config
 	 * @arg {string} hash - Hash to be matched
-	 * @returns {{params:Object, props:Object}} result - 
+	 * @returns {{params:Object, config:ViewConfig}} result - 
 	 * 	Matched route parameters and properties
 	 */
-	static matchRoute(config:object, hash:string) {
-		for(const route in config) {
+	static matchRoute(routes:{[route:string]: ViewConfig}, hash:string) {
+		for(const route in routes) {
 			let keys: pathToRegexp.Key[] = []
 			const re = pathToRegexp(route, keys)
 			const matching = re.exec(hash)
@@ -24,7 +25,7 @@ export default class Router {
 				}
 				return {
 					params: params,
-					props: config[route]
+					config: routes[route]
 				}
 			}
 		}

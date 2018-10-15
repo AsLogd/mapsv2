@@ -5,7 +5,7 @@ import World from "./World"
 export interface ViewConfig{
 	title: string,
 	render: string | object | Function,
-	view?: View,
+	view?: typeof View,
 	props?: object | Function
 }
 
@@ -13,11 +13,11 @@ export default class View{
 	private readonly TITLE_ID: string = "map-routeHeader"
 	config:ViewConfig
 	params:any
-	constructor(matching){
-		this.config = matching.props
+	constructor(matching:{config:ViewConfig, params:any}){
+		this.config = matching.config
 		this.params = matching.params
 		const formattedTitle = Util.format(
-			matching.props.title,
+			matching.config.title,
 			matching.params
 		)
 		this.setTitle(formattedTitle)

@@ -1,14 +1,23 @@
 import * as Three from "three"
 const FBXLoader = require("three-fbx-loader")
+const OrbitControls = require("orbit-controls-es6")
+
 import Util from "./Util"
 
 export default class World {
 	scene: Three.Scene
 	camera: Three.Camera
+	controls: Three.OrbitControls
 	renderer: Three.WebGLRenderer
 	loader: any
+	fontLoader: any
+	assets: any
 
 	constructor(){
+		this.assets = {
+			fonts: {}
+		}
+		this.fontLoader = new Three.FontLoader()
 		this.loader = new FBXLoader()
 		this.scene = new Three.Scene()
 		this.initLight()
@@ -19,8 +28,26 @@ export default class World {
 	}
 
 	tick = () => {
-		requestAnimationFrame( this.tick );
-		this.renderer.render( this.scene, this.camera );
+		requestAnimationFrame( this.tick )
+		this.controls.update()
+		this.renderer.render( this.scene, this.camera )
+	}
+
+	loadDefaultFont = (path:string) => {
+		return this.loadFont("default", path)
+	}
+
+	loadFont = (name:string, path:string):Promise<string> => {
+		return new Promise((resolve, reject) => {
+			this.fontLoader.load(path, (font) => {
+				this.assets.fonts[name] = font
+				resolve("")
+			}, 
+			()=>{},
+			(error:string)=>{
+				reject(error)
+			})
+		})
 	}
 
 	applyProperties(object, props){
@@ -28,13 +55,33 @@ export default class World {
 		if(p.color){
 			object.material.color = new Three.Color(p.color)
 		}
+		if(p.title){
+			const titleGeom = new Three.TextGeometry(p.title,{
+				font: this.assets.fonts["default"],
+				size: 70,
+				height: 1,
+				curveSegments: 12
+			})
+			const material = new Three.MeshBasicMaterial({
+				color: 0xffffff
+			})
+			const titleMesh = new Three.Mesh(titleGeom, material)
+			this.scene.add(titleMesh)
+			const bbox = new Three.Box3().setFromObject(object)
+
+			const rot = object.rotation
+			const rad = 90*(Math.PI/180)
+			titleMesh.rotation.set(rot.x, rot.y, rot.z+rad)
+			titleMesh.position.copy(object.position)
+			titleMesh.position.y = bbox.max.y+5
+
+		}
 
 	}
 
 	addFromFile = (path:string, props):Promise<string> => {
 		return new Promise((resolve, reject) => {
 			this.loader.load(path, (object) => {
-				
 				for(const child of object.children) {
 					//For some reason all names have 'Model' appended
 					const name = child.name.slice(0,-5)
@@ -83,17 +130,18 @@ export default class World {
 		this.scene.add(ambient)
 	}
 	initCamera(){
-		this.camera = new Three.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.01, 10000 );
-		this.camera.position.set(0, 20, 20);
-		this.camera.up.set(0, 1, 0);
-		this.camera.lookAt(new Three.Vector3(0, 0, 0));
+		this.camera = new Three.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.01, 10000 )
+		this.camera.position.set(0, 200, 200)
+		this.camera.up.set(0, 1, 0)
+		this.camera.lookAt(new Three.Vector3(0, 0, 0))
+		this.controls = new OrbitControls(this.camera)
 	}
 	initRenderer(){
-		this.renderer = new Three.WebGLRenderer({antialias: true});
-		this.renderer.setSize( window.innerWidth, window.innerHeight );
-		this.renderer.setClearColor(0x666666);
+		this.renderer = new Three.WebGLRenderer({antialias: true})
+		this.renderer.setSize( window.innerWidth, window.innerHeight )
+		this.renderer.setClearColor(0x666666)
 		this.renderer.domElement.id="map-canvas"
-		document.body.appendChild( this.renderer.domElement );
+		document.body.appendChild( this.renderer.domElement )
 	}
 
 	fadeCanvas(): Promise<any>{
