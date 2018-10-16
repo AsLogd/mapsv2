@@ -4,19 +4,37 @@ const OrbitControls = require("orbit-controls-es6")
 
 import Util from "./Util"
 
+export enum EventType {
+	CLICK
+}
+
 export default class World {
+	// Time in ms to discern between click and hold
+	readonly CLICK_MAX_TIME = 200
+
+	assets: any
+
+	clickEvents: Function[]
+
+	mouseDownTmstp: number
+	mousePos: Three.Vector2
+
 	scene: Three.Scene
 	camera: Three.Camera
 	controls: Three.OrbitControls
 	renderer: Three.WebGLRenderer
+	raycaster: Three.Raycaster
 	loader: any
 	fontLoader: any
-	assets: any
 
 	constructor(){
 		this.assets = {
 			fonts: {}
 		}
+		this.clickEvents = []
+		this.mouseDownTmstp = 0
+		this.mousePos = new Three.Vector2()
+		this.raycaster = new Three.Raycaster()
 		this.fontLoader = new Three.FontLoader()
 		this.loader = new FBXLoader()
 		this.scene = new Three.Scene()
@@ -25,6 +43,32 @@ export default class World {
 		this.initCamera()
 		this.initRenderer()
 		this.tick()
+	}
+
+	handleMouseMove = (e) => {
+		// calculate mouse position in normalized device coordinates
+        // (-1 to +1) for both components
+        this.mousePos.x = ( e.clientX / window.innerWidth ) * 2 - 1;
+		this.mousePos.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
+	}
+
+	handleMouseClick = (e) => {
+		if (this.mouseDownTmstp - Date.now() > this.CLICK_MAX_TIME) 
+			return
+
+		// update the picking ray with the camera and the mouse position
+		this.raycaster.setFromCamera(this.mousePos, this.camera)
+		// intersect with all scene objects
+		let intersect = this.raycaster.intersectObjects(this.scene.children, true)
+		let selected = intersect[0]
+		// If we have a hit
+		if (selected) {
+			// and we have a registered click event
+			if (this.clickEvents[selected.object.name]) {
+				// execute the callback
+				this.clickEvents[selected.object.name]()
+			}
+		}
 	}
 
 	tick = () => {
@@ -50,12 +94,26 @@ export default class World {
 		})
 	}
 
+	registerEvent(type:EventType, name:string, callback: Function) {
+		if (typeof callback !== "function") {
+			console.error("The callback is not a function")
+			return
+		}
+		switch(type){
+			case EventType.CLICK:
+				this.clickEvents[name] = callback
+				break
+			default:
+				console.error("Unknown event type")
+		}
+	}
+
 	applyProperties(object, props){
 		const p = {...props.base, ...props}
-		if(p.color){
+		if (p.color) {
 			object.material.color = new Three.Color(p.color)
 		}
-		if(p.title){
+		if (p.title) {
 			const titleGeom = new Three.TextGeometry(p.title,{
 				font: this.assets.fonts["default"],
 				size: 70,
@@ -74,7 +132,11 @@ export default class World {
 			titleMesh.rotation.set(rot.x, rot.y, rot.z+rad)
 			titleMesh.position.copy(object.position)
 			titleMesh.position.y = bbox.max.y+5
-
+		}
+		if (p.linkTo) {
+			this.registerEvent(EventType.CLICK, object.name, ()=>{
+				location.hash = p.linkTo
+			})
 		}
 
 	}
@@ -142,6 +204,16 @@ export default class World {
 		this.renderer.setClearColor(0x666666)
 		this.renderer.domElement.id="map-canvas"
 		document.body.appendChild( this.renderer.domElement )
+		this.initEvents()
+	}
+
+	initEvents(){
+		let de = this.renderer.domElement
+		de.addEventListener("mousedown", ()=>{
+			this.mouseDownTmstp = Date.now()
+		})
+		de.addEventListener("click", this.handleMouseClick)
+		de.addEventListener("mousemove", this.handleMouseMove)
 	}
 
 	fadeCanvas(): Promise<any>{
