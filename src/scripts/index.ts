@@ -1,6 +1,5 @@
 import HMap from "./HMap/HMap"
-import RootView from "./views/RootView"
-import BuildingView from "./views/BuildingView"
+import BuildingController from "./controllers/BuildingController"
 
 document.addEventListener('DOMContentLoaded', () => {
 	const bases = {
@@ -60,7 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		routes:{
 			"/:building/:floor": {
 				title: "{building}",
-				view: BuildingView,
+				controller: BuildingController,
+				viewId: "map-floors",
 				render: "assets/models/{building}-{floor}.fbx",
 				props: function(params){
 					return buildingProps[params.building][params.floor]
@@ -68,7 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			},
 			"/:building": {
 				title: "{building}",
-				view: BuildingView,
+				controller: BuildingController,
+				viewId: "map-floors",
 				render: {
 					"0": "assets/models/{building}-0.fbx",
 					"1": "assets/models/{building}-1.fbx",
@@ -80,7 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
 			},
 			"/": {
 				title: "UPC",
-				view: RootView,
 				render: "assets/models/upc.fbx",
 				props: {
 					"a6": {

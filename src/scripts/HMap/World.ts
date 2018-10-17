@@ -11,6 +11,7 @@ export enum EventType {
 export default class World {
 	// Time in ms to discern between click and hold
 	readonly CLICK_MAX_TIME = 200
+	readonly CANVAS_ID = "map-canvas"
 
 	assets: any
 
@@ -202,7 +203,7 @@ export default class World {
 		this.renderer = new Three.WebGLRenderer({antialias: true})
 		this.renderer.setSize( window.innerWidth, window.innerHeight )
 		this.renderer.setClearColor(0x666666)
-		this.renderer.domElement.id="map-canvas"
+		this.renderer.domElement.id=this.CANVAS_ID
 		document.body.appendChild( this.renderer.domElement )
 		this.initEvents()
 	}
@@ -217,10 +218,10 @@ export default class World {
 	}
 
 	fadeCanvas(): Promise<any>{
-		return Util.fade("#map-canvas")
+		return Util.fade("#"+this.CANVAS_ID)
 	}
 
 	showCanvas(): Promise<any>{
-		return Util.show("#map-canvas")
+		return Util.show("#"+this.CANVAS_ID)
 	}
 }

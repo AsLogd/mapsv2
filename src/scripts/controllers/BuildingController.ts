@@ -1,6 +1,6 @@
-import View from "../HMap/View"
+import Controller from "../HMap/Controller"
 
-export default class BuildingView extends View{
+export default class BuildingController extends Controller {
 	constructor(matching){
 		super(matching)
 		if(matching.params.floor) {

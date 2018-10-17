@@ -18,7 +18,7 @@
     "dist:images": "cp -R src/images/* dist/assets/images",
     "scripts:compile": "tsc -m 'commonjs' -t 'es6' --outDir ./temp ./src/scripts/index.ts",
     "scripts:bundle": "browserify temp/index.js > dist/assets/js/index.js",
-    "less:main": "lessc src/styles/main.less dist/assets/css/main.css",
+    "less:main": "lessc src/styles/app.less dist/assets/css/main.css",
     "watch:js": "onchange \"src/scripts/**/*\" -- npm-run-all dist:scripts notify-update",
     "watch:css": "onchange \"src/styles\" -- npm-run-all dist:styles notify-update",
     "watch:models": "onchange \"src/models\" -- npm-run-all dist:models notify-update",

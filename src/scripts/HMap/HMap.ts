@@ -1,4 +1,4 @@
-import View, {ViewConfig} from "./View"
+import Controller, {ControllerConfig} from "./Controller"
 import Router from "./Router"
 import Util from "./Util"
 import World from "./World"
@@ -10,14 +10,14 @@ export interface Config{
 		fonts: {[name:string]: string}
 	},
 	routes:{
-		[route:string]: ViewConfig
+		[route:string]: ControllerConfig
 	}
 }
 
 export default class HMap{
 	readonly LOADING_ID: string = "map-loading"
 	config: Config
-	view: View
+	currentController: Controller
 	world: World
 	
 	constructor(config) {
@@ -50,14 +50,28 @@ export default class HMap{
 		return Util.show("#"+this.LOADING_ID)
 	}
 
-	setView(matching:{config:ViewConfig, params:any}) {
-		this.world.fadeCanvas().then(()=>{
+	setView(matching:{config:ControllerConfig, params:any}) {
+		const c = this.currentController ? 
+			this.currentController.hiding() : Promise.resolve()
+			
+		// Hide canvas and view (if there is one)
+		Promise.all([
+			c,
+			this.world.fadeCanvas()
+		]).then(()=>{
+			// Render new scene
 			this.world.emtpyScene()
-			this.view = new (matching.config.view)(matching)
-			this.view.init(this.world).then(()=>{
-				this.hideLoading()
-				this.world.showCanvas()
-			})
+			if (matching.config.controller){
+				this.currentController = new (matching.config.controller)(matching)
+			} else {
+				this.currentController = new Controller(matching)
+			}
+			return this.currentController.init(this.world)
+		}).then(()=>{
+			// Show the new canvas and view
+			this.hideLoading()
+			this.world.showCanvas()
+			this.currentController.showing()
 		})
 	}
 
