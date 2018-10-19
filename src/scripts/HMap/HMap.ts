@@ -75,7 +75,23 @@ export default class HMap{
 			// Show the new canvas and view
 			this.world.showCanvas()
 			this.currentController.showing()
+			//Update the new linked elements
+			const view = document.getElementById(HMap.VIEW_CONTAINER_ID)
+			this.activateLinkedElements(view)
 		})
+	}
+
+	activateLinkedElements(base:HTMLElement) {
+		const linked = base.querySelectorAll("[data-link-hash]")
+		for(let i = 0; i < linked.length; i++) {
+			let elem = <HTMLElement>linked[i]
+			let reg = new RegExp(elem.dataset.linkHash)
+			if (reg.test(location.hash)) {
+				elem.classList.add("active")
+			} else {
+				elem.classList.remove("active")
+			}
+		}
 	}
 
 	handleHashChange = () => {
@@ -85,8 +101,8 @@ export default class HMap{
 			location.hash = "/"
 		} else {
 			this.setView(matching)
-			
 		}
+		this.activateLinkedElements(document.body)
 	}
 
 	handleClickBack = (ev:Event) => {

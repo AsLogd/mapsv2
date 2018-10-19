@@ -16,9 +16,12 @@ export default class World {
 	assets: any
 
 	clickEvents: Function[]
+	hoverOutEvents: Function[]
+	hoverInEvents: Function[]
 
 	mouseDownTmstp: number
 	mousePos: Three.Vector2
+	lastHover: string
 
 	scene: Three.Scene
 	camera: Three.Camera
@@ -33,8 +36,11 @@ export default class World {
 			fonts: {}
 		}
 		this.clickEvents = []
+		this.hoverOutEvents = []
+		this.hoverInEvents = []
 		this.mouseDownTmstp = 0
 		this.mousePos = new Three.Vector2()
+		this.lastHover = ""
 		this.raycaster = new Three.Raycaster()
 		this.fontLoader = new Three.FontLoader()
 		this.loader = new FBXLoader()
@@ -51,23 +57,62 @@ export default class World {
         // (-1 to +1) for both components
         this.mousePos.x = ( e.clientX / window.innerWidth ) * 2 - 1;
 		this.mousePos.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
+		this.checkMouseHover()
+	}
+
+	getFirstRayHit(): Three.Object3D | null {
+		// update the picking ray with the camera and the mouse position
+		this.raycaster.setFromCamera(this.mousePos, this.camera)
+		// intersect with all scene objects
+		let intersect = this.raycaster.intersectObjects(this.scene.children, true)
+		//return first hit
+		if(intersect[0])
+			return intersect[0].object
+		else
+			return null
+	}
+
+	checkMouseHover() {
+		let hovered: Three.Object3D | null = this.getFirstRayHit()
+		// If we are hovering an object
+		if (hovered) {
+			// And its different from last tick
+			if(this.lastHover != hovered.name){
+				// Call the hover out event of the previous object
+				if(this.hoverOutEvents[this.lastHover]){
+					this.hoverOutEvents[this.lastHover]()
+				}
+				
+				this.lastHover = hovered.name
+				
+				// Then, call the hover in of the new one
+				if(this.hoverInEvents[hovered.name]){
+					this.hoverInEvents[hovered.name]()
+				}
+				
+			}
+		} else {
+			if(!this.lastHover)
+				return
+
+			if(this.hoverOutEvents[this.lastHover]){
+				this.hoverOutEvents[this.lastHover]()
+				this.lastHover = ""
+			}
+		}
 	}
 
 	handleMouseClick = (e) => {
 		if (this.mouseDownTmstp - Date.now() > this.CLICK_MAX_TIME) 
 			return
 
-		// update the picking ray with the camera and the mouse position
-		this.raycaster.setFromCamera(this.mousePos, this.camera)
-		// intersect with all scene objects
-		let intersect = this.raycaster.intersectObjects(this.scene.children, true)
-		let selected = intersect[0]
+		let selected = this.getFirstRayHit()
 		// If we have a hit
 		if (selected) {
 			// and we have a registered click event
-			if (this.clickEvents[selected.object.name]) {
+			if (this.clickEvents[selected.name]) {
 				// execute the callback
-				this.clickEvents[selected.object.name]()
+				this.clickEvents[selected.name]()
 			}
 		}
 	}
@@ -109,6 +154,10 @@ export default class World {
 		}
 	}
 
+	changeCursor = (cursor:string) => () => {
+		document.querySelector("canvas").style.cursor=cursor
+	}
+
 	applyProperties(object, props){
 		const p = {...props.base, ...props}
 		if (p.color) {
@@ -138,6 +187,10 @@ export default class World {
 			this.registerEvent(EventType.CLICK, object.name, ()=>{
 				location.hash = p.linkTo
 			})
+		}
+		if(p.cursor) {
+			this.hoverInEvents[object.name] = this.changeCursor(p.cursor)
+			this.hoverOutEvents[object.name] = this.changeCursor("default")
 		}
 
 	}
