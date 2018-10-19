@@ -40,6 +40,14 @@ document.addEventListener('DOMContentLoaded', () => {
 				z: 23
 			}
 		},
+		hq:{
+			color:"#111",
+			fontSize: 60,
+			title: "HQ",
+			titleOffset:{
+				x: -60
+			}
+		},
 		abuilding: {}
 	}
 	bases.abuilding = {
@@ -66,6 +74,17 @@ document.addEventListener('DOMContentLoaded', () => {
 				"002": {
 					base:bases.closed
 				}
+			},
+			"1": {
+				"*":{
+					base:bases.default
+				},
+				"e01":{
+					base: bases.closed
+				},
+				"e02":{
+					base: bases.closed
+				}
 			}
 		},
 		"a4":{
@@ -83,6 +102,17 @@ document.addEventListener('DOMContentLoaded', () => {
 						x: -25*5
 					},
 					fontSize: 25
+				}
+			},
+			"1": {
+				"*":{
+					base:bases.default
+				},
+				"e01": {
+					base:bases.closed	
+				},
+				"e02": {
+					base:bases.closed	
 				}
 			}
 		},
@@ -113,9 +143,11 @@ document.addEventListener('DOMContentLoaded', () => {
 				"*":{
 					base:bases.default
 				},
-				"a6101": {
-					base: bases.hackingRoom,
-					subtitle: "A5-101"
+				"e01": {
+					base: bases.closed
+				},
+				"e02": {
+					base: bases.closed
 				}
 			}
 		},
@@ -135,9 +167,11 @@ document.addEventListener('DOMContentLoaded', () => {
 				"*":{
 					base:bases.default
 				},
-				"101": {
-					base: bases.hackingRoom,
-					subtitle: "A6-101"
+				"e01": {
+					base: bases.hq
+				},
+				"e02": {
+					base: bases.hq
 				}
 			}
 		}

@@ -4,8 +4,12 @@ export default class BuildingController extends Controller {
 	constructor(matching){
 		super(matching)
 		if(matching.params.floor) {
+			let floor = matching.params.floor
+			if(floor === "1"){
+				floor = "E"
+			}
 			this.setTitle(
-				`${matching.params.building}-${matching.params.floor}`
+				`${matching.params.building}-${floor}`
 			)
 		}
 	}
