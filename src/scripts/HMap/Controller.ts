@@ -114,15 +114,10 @@ export default class Controller{
 					render[key],
 					this.params
 				)
-				ps.push(formatted)
+				ps.push(world.addFromFile(formatted, props[key]))
 			}
 
-			const addFromFileWithProps = (path) => 
-				world.addFromFile(path, props)
-
-			return Promise.all(
-				ps.map(addFromFileWithProps)
-			)
+			return Promise.all(ps)
 		}
 		else if(typeof render === "string") {
 			//Path may contains parameters

@@ -105826,10 +105826,9 @@ class Controller {
             for (const key in render) {
                 //Path may contains parameters
                 const formatted = Util_1.default.format(render[key], this.params);
-                ps.push(formatted);
+                ps.push(world.addFromFile(formatted, props[key]));
             }
-            const addFromFileWithProps = (path) => world.addFromFile(path, props);
-            return Promise.all(ps.map(addFromFileWithProps));
+            return Promise.all(ps);
         }
         else if (typeof render === "string") {
             //Path may contains parameters
@@ -106423,6 +106422,10 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         hackingRoom: {
             title: "Hacking Room",
+            fontSize: 15,
+            titleOffset: {
+                x: -14 * 6
+            },
             color: "#5F5"
         },
         clickable: {
@@ -106466,9 +106469,9 @@ document.addEventListener('DOMContentLoaded', () => {
         sleeping: {
             color: "#225",
             title: "Sleeping Room",
-            fontSize: 25,
+            fontSize: 15,
             titleOffset: {
-                x: -25 * 6
+                x: -14 * 6
             }
         },
         abuilding: {}
@@ -106584,11 +106587,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     base: bases.default
                 },
                 "101": {
-                    color: "orange",
+                    color: "brown",
                     title: "Nerf Gun Battle",
                     titleOffset: {
                         x: -25 * 7
-                    }
+                    },
+                    fontSize: 25
                 },
                 "102": {
                     base: bases.hackingRoom
@@ -106613,6 +106617,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 "201": {
                     base: bases.sleeping
                 },
+                "202": {
+                    base: bases.sleeping
+                },
                 "203": {
                     base: bases.sleeping
                 },
@@ -106629,25 +106636,29 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         "a5": {
             "0": {
-                "*": {
-                    base: bases.default
-                },
-                "entresol": {
-                    title: "Infodesk",
-                    color: "rgb(125,125,255)",
-                    fontSize: 20,
-                    titleOffset: {
-                        x: -20 * 3,
-                        z: 25
+                "floor": {
+                    "*": {
+                        base: bases.default
+                    },
+                    "001": {
+                        base: bases.talks,
+                        subtitle: "A5-001"
+                    },
+                    "002": {
+                        base: bases.talks,
+                        subtitle: "A5-002"
                     }
                 },
-                "001": {
-                    base: bases.talks,
-                    subtitle: "A5-001"
-                },
-                "002": {
-                    base: bases.talks,
-                    subtitle: "A5-002"
+                "info": {
+                    "entresol": {
+                        title: "Infodesk",
+                        color: "rgb(125,125,255)",
+                        fontSize: 20,
+                        titleOffset: {
+                            x: -20 * 3,
+                            z: 25
+                        }
+                    }
                 }
             },
             "1": {
@@ -106744,8 +106755,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 "106": {
                     color: "brown",
                     title: "Cafeteria",
+                    fontSize: 20,
                     titleOffset: {
-                        x: -100
+                        x: -60
                     }
                 }
             },
