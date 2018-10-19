@@ -566,6 +566,15 @@ document.addEventListener('DOMContentLoaded', () => {
 							x:90
 						},
 						info: "This building will hold the open and end ceremonies"
+					},
+					"meals": {
+						title: "Meal zone",
+						color: "#733",
+						fontSize: 20,
+						titleOffset:{
+							x: -4*20,
+							z: 6
+						}
 					}
 				}
 			}
