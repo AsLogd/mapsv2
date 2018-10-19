@@ -8,7 +8,7 @@ import {MatchedRoute} from "./Router"
  * A function that receives an object with the route params
  * and returns the properties of the objects for that route
  */
-type PropsCallback = (params:{[param: string]: string}) => object
+export type PropsCallback = (params:{[param: string]: string}) => object
 type RenderCallback = (world:World) => Promise<any>
 
 export interface ControllerConfig{
@@ -94,6 +94,13 @@ export default class Controller{
 	 * @arg {World} world - The world where the scene will be rendered
 	 */
 	initScene(world:World): Promise<any>{
+		let props: object
+		if(typeof this.config.props === "function"){
+			props = (<PropsCallback>this.config.props)(this.params)
+		} else {
+			props = this.config.props
+		}
+
 		if(typeof this.config.render === "object") {
 			const ps = []
 			for(const key in this.config.render) {
@@ -104,9 +111,9 @@ export default class Controller{
 				)
 				ps.push(formatted)
 			}
-			
+
 			const addFromFileWithProps = (path) => 
-				world.addFromFile(path, this.config.props)
+				world.addFromFile(path, props)
 
 			return Promise.all(
 				ps.map(addFromFileWithProps)
@@ -118,7 +125,7 @@ export default class Controller{
 				this.config.render,
 				this.params
 			)
-			return world.addFromFile(formatted, this.config.props)
+			return world.addFromFile(formatted, props)
 		}
 		else {
 			console.error("Render value not compatible:" + this.config.render)

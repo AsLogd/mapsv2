@@ -4,6 +4,7 @@ const OrbitControls = require("orbit-controls-es6")
 
 import HMap from "./HMap"
 import Util from "./Util"
+import {PropsCallback} from "./Controller"
 
 export enum EventType {
 	CLICK
@@ -223,10 +224,13 @@ export default class World {
 		this.renderer.setSize( window.innerWidth, window.innerHeight )
 	}
 
-	addFromFile = (path:string, props):Promise<string> => {
+	addFromFile = (path:string, props:object):Promise<string> => {
 		return new Promise((resolve, reject) => {
 			this.loader.load(path, (object) => {
 				for(const child of object.children) {
+					if(child.type !== "Mesh")
+						continue
+					
 					if(props["*"])
 						this.applyProperties(child, props["*"])
 					//For some reason all names have 'Model' appended
@@ -281,8 +285,8 @@ export default class World {
 		hemi.position.set( 0, 500, 0 )
 		this.scene.add( hemi )
 
-		const light = new Three.DirectionalLight( 0xffffff)
-		light.position.set(0, 500, 100)
+		const light = new Three.DirectionalLight( 0xffffff, 0.7)
+		light.position.set(0, 500, 300)
 		this.scene.add(light)
 /*
 		const ambient = new Three.AmbientLight( 0xffffff, 0.3 )

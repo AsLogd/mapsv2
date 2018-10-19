@@ -16,11 +16,17 @@ document.addEventListener('DOMContentLoaded', () => {
 		},
 		closed: {
 			title: "Closed",
-			subtitle: "AX-XXX",
+			fontSize: 25,
+			titleOffset:{
+				x: -25*2.5
+			},
 			color: "#333"
 		},
 		talks: {
 			title: "Talks",
+			titleOffset:{
+				x:-125
+			},
 			color: "#00F"
 		},
 		street: {
@@ -49,31 +55,89 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 	//Properties of the objects inside each floor
 	const buildingProps = {
-		"a6": {
+		"a3":{
 			"0": {
-				"a6001": {
-					base: bases.talks,
-					subtitle: "A6-001"
+				"*":{
+					base:bases.default
+				},
+				"001": {
+					base:bases.closed
+				},
+				"002": {
+					base:bases.closed
 				}
-			},
-			"1": {
-				"a6101": {
-					base: bases.hackingRoom,
-					subtitle: "A6-101"
+			}
+		},
+		"a4":{
+			"0": {
+				"*":{
+					base:bases.default
+				},
+				"001": {
+					base:bases.closed
+				},
+				"002": {
+					color:"red",
+					title: "Team Building",
+					titleOffset: {
+						x: -25*5
+					},
+					fontSize: 25
 				}
 			}
 		},
 		"a5": {
 			"0": {
-				"a6001": {
+				"*":{
+					base:bases.default
+				},
+				"entresol":{
+					title: "Infodesk",
+					color: "rgb(125,125,255)",
+					fontSize: 20,
+					titleOffset:{
+						x:-20*3,
+						z: 25
+					}
+				},
+				"001": {
 					base: bases.talks,
 					subtitle: "A5-001"
+				},
+				"002": {
+					base: bases.talks,
+					subtitle: "A5-002"
 				}
 			},
 			"1": {
+				"*":{
+					base:bases.default
+				},
 				"a6101": {
 					base: bases.hackingRoom,
 					subtitle: "A5-101"
+				}
+			}
+		},
+		"a6": {
+			"0": {
+				"*":{
+					base:bases.default
+				},
+				"001": {
+					base: bases.closed
+				},
+				"002": {
+					base: bases.closed
+				}
+			},
+			"1": {
+				"*":{
+					base:bases.default
+				},
+				"101": {
+					base: bases.hackingRoom,
+					subtitle: "A6-101"
 				}
 			}
 		}
@@ -83,14 +147,27 @@ document.addEventListener('DOMContentLoaded', () => {
 			defaultFont: "assets/fonts/gotham.json"
 		},
 		routes:{
+			"/A5/0": {
+				title: "A5",
+				controller: BuildingController,
+				backTo: "/",
+				viewId: "template-map-floors",
+				render: {
+					"floor": "assets/models/AX0.fbx",
+					"info": "assets/models/entresol.fbx"
+				},
+				props: function(params){
+					return buildingProps["a5"]["0"]
+				}
+			},
 			"/:building/:floor": {
 				title: "{building}",
 				controller: BuildingController,
 				backTo: "/",
 				viewId: "template-map-floors",
-				render: "assets/models/{building}-{floor}.fbx",
+				render: "assets/models/AX{floor}.fbx",
 				props: function(params){
-					return buildingProps[params.building][params.floor]
+					return buildingProps[params.building.toLowerCase()][params.floor]
 				}
 			},
 			"/:building": {
@@ -105,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
 					"3": "assets/models/{building}-3.fbx"
 				},
 				props: function(params){
-					return buildingProps[params.building]
+					return buildingProps[params.building.toLowerCase()]
 				}
 			},
 			"/": {
@@ -185,14 +262,14 @@ document.addEventListener('DOMContentLoaded', () => {
 					},
 					"checkin":{
 						base: bases.abuilding,
-						title: "Infodesk",
+						title: "Checkin",
 						fontSize: 25,
 						titleOffset:{
 							x: -25*3,
 							z: 15,
 							y: -3
 						},
-						info: "At the Infodesk you can check-in, leave your baggage, and pick up hardware"
+						info: "Cross the door to get your wristband and swag. Welcome to HackUPC!"
 					},
 					"showers":{
 						base: bases.clickable,
