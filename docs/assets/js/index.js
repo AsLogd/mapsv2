@@ -105817,23 +105817,27 @@ class Controller {
         else {
             props = this.config.props;
         }
-        if (typeof this.config.render === "object") {
+        let render = this.config.render;
+        if (typeof this.config.render === "function") {
+            render = this.config.render(this.params);
+        }
+        if (typeof render === "object") {
             const ps = [];
-            for (const key in this.config.render) {
+            for (const key in render) {
                 //Path may contains parameters
-                const formatted = Util_1.default.format(this.config.render[key], this.params);
+                const formatted = Util_1.default.format(render[key], this.params);
                 ps.push(formatted);
             }
             const addFromFileWithProps = (path) => world.addFromFile(path, props);
             return Promise.all(ps.map(addFromFileWithProps));
         }
-        else if (typeof this.config.render === "string") {
+        else if (typeof render === "string") {
             //Path may contains parameters
-            const formatted = Util_1.default.format(this.config.render, this.params);
+            const formatted = Util_1.default.format(render, this.params);
             return world.addFromFile(formatted, props);
         }
         else {
-            console.error("Render value not compatible:" + this.config.render);
+            console.error("Render value not compatible:" + render);
             return Promise.reject();
         }
     }
@@ -106383,7 +106387,11 @@ class BuildingController extends Controller_1.default {
     constructor(matching) {
         super(matching);
         if (matching.params.floor) {
-            this.setTitle(`${matching.params.building}-${matching.params.floor}`);
+            let floor = matching.params.floor;
+            if (floor === "1") {
+                floor = "E";
+            }
+            this.setTitle(`${matching.params.building}-${floor}`);
         }
     }
     showing() {
@@ -106447,6 +106455,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 z: 23
             }
         },
+        hq: {
+            color: "#111",
+            fontSize: 60,
+            title: "HQ",
+            titleOffset: {
+                x: -60
+            }
+        },
+        sleeping: {
+            color: "#225",
+            title: "Sleeping Room",
+            fontSize: 25,
+            titleOffset: {
+                x: -25 * 6
+            }
+        },
         abuilding: {}
     };
     bases.abuilding = Object.assign({}, bases.clickable, { fontSize: 50, titleOffset: {
@@ -106468,6 +106492,63 @@ document.addEventListener('DOMContentLoaded', () => {
                 "002": {
                     base: bases.closed
                 }
+            },
+            "1": {
+                "*": {
+                    base: bases.default
+                },
+                "e01": {
+                    base: bases.closed
+                },
+                "e02": {
+                    base: bases.closed
+                }
+            },
+            "2": {
+                "*": {
+                    base: bases.default
+                },
+                "101": {
+                    base: bases.sleeping
+                },
+                "102": {
+                    base: bases.sleeping
+                },
+                "103": {
+                    base: bases.sleeping
+                },
+                "104": {
+                    base: bases.sleeping
+                },
+                "105": {
+                    base: bases.sleeping
+                },
+                "106": {
+                    base: bases.sleeping
+                }
+            },
+            "3": {
+                "*": {
+                    base: bases.default
+                },
+                "201": {
+                    base: bases.sleeping
+                },
+                "202": {
+                    base: bases.sleeping
+                },
+                "203": {
+                    base: bases.sleeping
+                },
+                "204": {
+                    base: bases.sleeping
+                },
+                "205": {
+                    base: bases.sleeping
+                },
+                "206": {
+                    base: bases.sleeping
+                }
             }
         },
         "a4": {
@@ -106485,6 +106566,64 @@ document.addEventListener('DOMContentLoaded', () => {
                         x: -25 * 5
                     },
                     fontSize: 25
+                }
+            },
+            "1": {
+                "*": {
+                    base: bases.default
+                },
+                "e01": {
+                    base: bases.closed
+                },
+                "e02": {
+                    base: bases.closed
+                }
+            },
+            "2": {
+                "*": {
+                    base: bases.default
+                },
+                "101": {
+                    color: "orange",
+                    title: "Nerf Gun Battle",
+                    titleOffset: {
+                        x: -25 * 7
+                    }
+                },
+                "102": {
+                    base: bases.hackingRoom
+                },
+                "103": {
+                    base: bases.hackingRoom
+                },
+                "104": {
+                    base: bases.hackingRoom
+                },
+                "105": {
+                    base: bases.hackingRoom
+                },
+                "106": {
+                    base: bases.hackingRoom
+                }
+            },
+            "3": {
+                "*": {
+                    base: bases.default
+                },
+                "201": {
+                    base: bases.sleeping
+                },
+                "203": {
+                    base: bases.sleeping
+                },
+                "204": {
+                    base: bases.sleeping
+                },
+                "205": {
+                    base: bases.sleeping
+                },
+                "206": {
+                    base: bases.sleeping
                 }
             }
         },
@@ -106515,9 +106654,51 @@ document.addEventListener('DOMContentLoaded', () => {
                 "*": {
                     base: bases.default
                 },
-                "a6101": {
-                    base: bases.hackingRoom,
-                    subtitle: "A5-101"
+                "e01": {
+                    base: bases.closed
+                },
+                "e02": {
+                    base: bases.closed
+                }
+            },
+            "2": {
+                "*": {
+                    base: bases.default
+                },
+                "101": {
+                    base: bases.hackingRoom
+                },
+                "103": {
+                    base: bases.hackingRoom
+                },
+                "104": {
+                    base: bases.hackingRoom
+                },
+                "105": {
+                    base: bases.hackingRoom
+                },
+                "106": {
+                    base: bases.hackingRoom
+                }
+            },
+            "3": {
+                "*": {
+                    base: bases.default
+                },
+                "201": {
+                    base: bases.hackingRoom
+                },
+                "203": {
+                    base: bases.hackingRoom
+                },
+                "204": {
+                    base: bases.hackingRoom
+                },
+                "205": {
+                    base: bases.hackingRoom
+                },
+                "206": {
+                    base: bases.hackingRoom
                 }
             }
         },
@@ -106537,9 +106718,55 @@ document.addEventListener('DOMContentLoaded', () => {
                 "*": {
                     base: bases.default
                 },
+                "e01": {
+                    base: bases.hq
+                },
+                "e02": {
+                    base: bases.hq
+                }
+            },
+            "2": {
+                "*": {
+                    base: bases.default
+                },
                 "101": {
-                    base: bases.hackingRoom,
-                    subtitle: "A6-101"
+                    base: bases.hackingRoom
+                },
+                "103": {
+                    base: bases.hackingRoom
+                },
+                "104": {
+                    base: bases.hackingRoom
+                },
+                "105": {
+                    base: bases.hackingRoom
+                },
+                "106": {
+                    color: "brown",
+                    title: "Cafeteria",
+                    titleOffset: {
+                        x: -100
+                    }
+                }
+            },
+            "3": {
+                "*": {
+                    base: bases.default
+                },
+                "201": {
+                    base: bases.hackingRoom
+                },
+                "203": {
+                    base: bases.hackingRoom
+                },
+                "204": {
+                    base: bases.hackingRoom
+                },
+                "205": {
+                    base: bases.hackingRoom
+                },
+                "206": {
+                    base: bases.hackingRoom
                 }
             }
         }
@@ -106567,7 +106794,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 controller: BuildingController_1.default,
                 backTo: "/",
                 viewId: "template-map-floors",
-                render: "assets/models/AX{floor}.fbx",
+                render: (params) => {
+                    if (parseInt(params.floor) > 1) {
+                        if (params.building === "A5" || params.building === "A6") {
+                            return "assets/models/A6{floor}.fbx";
+                        }
+                    }
+                    return "assets/models/AX{floor}.fbx";
+                },
                 props: function (params) {
                     return buildingProps[params.building.toLowerCase()][params.floor];
                 }
@@ -106577,11 +106811,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 controller: BuildingController_1.default,
                 backTo: "/",
                 viewId: "template-map-floors",
-                render: {
-                    "0": "assets/models/{building}-0.fbx",
-                    "1": "assets/models/{building}-1.fbx",
-                    "2": "assets/models/{building}-2.fbx",
-                    "3": "assets/models/{building}-3.fbx"
+                render: (params) => {
+                    const files = {
+                        "0": "assets/models/AX0.fbx",
+                        "1": "assets/models/AX1.fbx",
+                        "2": "assets/models/AX2.fbx",
+                        "3": "assets/models/AX3.fbx"
+                    };
+                    if (params.building === "A5" || params.building === "A6") {
+                        files["2"] = "assets/models/A62.fbx";
+                        files["3"] = "assets/models/A63.fbx";
+                    }
+                    return files;
                 },
                 props: function (params) {
                     return buildingProps[params.building.toLowerCase()];
@@ -106690,26 +106931,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     "a3": {
                         base: bases.abuilding,
                         title: "A3",
-                        //linkTo: "/A3"
-                        info: "Coming soon"
+                        linkTo: "/A3"
                     },
                     "a4": {
                         base: bases.abuilding,
                         title: "A4",
-                        //linkTo: "/A4"
-                        info: "Coming soon"
+                        linkTo: "/A4"
                     },
                     "a5": {
                         base: bases.abuilding,
                         title: "A5",
-                        //linkTo: "/A5"
-                        info: "Coming soon"
+                        linkTo: "/A5"
                     },
                     "a6": {
                         base: bases.abuilding,
                         title: "A6",
-                        //linkTo: "/A6"
-                        info: "Coming soon"
+                        linkTo: "/A6"
                     },
                     "vertex": {
                         base: bases.clickable,

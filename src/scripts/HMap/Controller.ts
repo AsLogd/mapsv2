@@ -101,12 +101,17 @@ export default class Controller{
 			props = this.config.props
 		}
 
-		if(typeof this.config.render === "object") {
+		let render = this.config.render
+		if(typeof this.config.render === "function"){
+			render = (<Function>this.config.render)(this.params)
+		}
+
+		if(typeof render === "object") {
 			const ps = []
-			for(const key in this.config.render) {
+			for(const key in render) {
 				//Path may contains parameters
 				const formatted = Util.format(
-					this.config.render[key],
+					render[key],
 					this.params
 				)
 				ps.push(formatted)
@@ -119,16 +124,16 @@ export default class Controller{
 				ps.map(addFromFileWithProps)
 			)
 		}
-		else if(typeof this.config.render === "string") {
+		else if(typeof render === "string") {
 			//Path may contains parameters
 			const formatted = Util.format(
-				this.config.render,
+				render,
 				this.params
 			)
 			return world.addFromFile(formatted, props)
 		}
 		else {
-			console.error("Render value not compatible:" + this.config.render)
+			console.error("Render value not compatible:" + render)
 			return Promise.reject()
 		}
 	}
