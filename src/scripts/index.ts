@@ -26,6 +26,14 @@ document.addEventListener('DOMContentLoaded', () => {
 		street: {
 			fontSize:20,
 		},
+		metro: {
+			color:"red",
+			title: "Metro",
+			fontSize: 20,
+			titleOffset:{
+				z: 23
+			}
+		},
 		abuilding: {}
 	}
 	bases.abuilding = {
@@ -107,6 +115,17 @@ document.addEventListener('DOMContentLoaded', () => {
 					"*":{
 						base: bases.default
 					},
+					"palaureial":{
+						base: bases.metro,
+						titleRotation:{
+							z: 180
+						},
+						title: "Metro - Palau Reial"
+					},
+					"zonauniversitaria":{
+						base: bases.metro,
+						title: "Metro - Zona Universitària"
+					},
 					"base":{
 						title: "HACKUPC",
 						fontSize:110,
@@ -121,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
 					"dulcet":{
 						base: bases.street,
 						titleOffset:{
-							y:-10
+							y:-15
 						},
 						title: "Carrer de Dulcet"
 					},
@@ -165,9 +184,15 @@ document.addEventListener('DOMContentLoaded', () => {
 						title: "Carrer de Jordi Girona"
 					},
 					"checkin":{
-						base: bases.clickable,
-						title: "Checkin",
-						info: "Cross the door to get your wristband and swag. Welcome to HackUPC!"
+						base: bases.abuilding,
+						title: "Infodesk",
+						fontSize: 25,
+						titleOffset:{
+							x: -25*3,
+							z: 15,
+							y: -3
+						},
+						info: "At the Infodesk you can check-in, leave your baggage, and pick up hardware"
 					},
 					"showers":{
 						base: bases.clickable,
@@ -186,22 +211,26 @@ document.addEventListener('DOMContentLoaded', () => {
 					"a3": {
 						base: bases.abuilding,
 						title: "A3",
-						linkTo: "/A3"
+						//linkTo: "/A3"
+						info: "Coming soon"
 					},
 					"a4": {
 						base: bases.abuilding,
 						title: "A4",
-						linkTo: "/A4"
+						//linkTo: "/A4"
+						info: "Coming soon"
 					},
 					"a5": {
 						base: bases.abuilding,
 						title: "A5",
-						linkTo: "/A5"
+						//linkTo: "/A5"
+						info: "Coming soon"
 					},
 					"a6": {
 						base: bases.abuilding,
 						title: "A6",
-						linkTo: "/A6"
+						//linkTo: "/A6"
+						info: "Coming soon"
 					},
 					"vertex": {
 						base: bases.clickable,

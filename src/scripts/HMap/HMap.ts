@@ -22,6 +22,7 @@ export default class HMap{
 	static readonly VIEW_CONTAINER_ID : string = "map-view"
 
 	static readonly MODAL_CONTAINER_ID : string = "map-modal"
+	static readonly INFO_MODAL_ID: string = "template-info"
 	static readonly PC_HELP_MODAL_ID: string = "template-instructions-pc"
 	static readonly MOBILE_HELP_MODAL_ID: string = "template-instructions-mobile"
 
@@ -38,6 +39,14 @@ export default class HMap{
 		}).catch((err)=>{
 			console.error(err)
 		})
+	}
+
+	static showInfo(msg: string){
+		const template = <HTMLTemplateElement>document.getElementById(HMap.INFO_MODAL_ID)
+		const body = document.getElementById(HMap.MODAL_CONTAINER_ID)
+		Util.replaceTemplate(body, template)
+		document.getElementById("info").innerHTML = msg
+		Util.show("#"+HMap.MODAL_CONTAINER_ID)
 	}
 
 	loadAssets(assets:any){
@@ -115,6 +124,10 @@ export default class HMap{
 		location.hash = backRoute
 	}
 
+	handleWindowResize = () => {
+		this.world.canvasResize()
+	}
+
 	showModal(templateId:string) {
 		const template = <HTMLTemplateElement>document.getElementById(templateId)
 		const body = document.getElementById(HMap.MODAL_CONTAINER_ID)
@@ -124,6 +137,7 @@ export default class HMap{
 	}
 
 	initListeners() {
+		window.addEventListener("resize", this.handleWindowResize)
 		window.addEventListener("hashchange", this.handleHashChange)
 		Util.addEvent(HMap.BACK_ID, "click", this.handleClickBack)
 		Util.addEvent(HMap.HELPBTN_ID, "click", ()=>{

@@ -2,6 +2,7 @@ import * as Three from "three"
 const FBXLoader = require("three-fbx-loader")
 const OrbitControls = require("orbit-controls-es6")
 
+import HMap from "./HMap"
 import Util from "./Util"
 
 export enum EventType {
@@ -24,7 +25,7 @@ export default class World {
 	lastHover: string
 
 	scene: Three.Scene
-	camera: Three.Camera
+	camera: Three.PerspectiveCamera
 	controls: Three.OrbitControls
 	renderer: Three.WebGLRenderer
 	raycaster: Three.Raycaster
@@ -208,7 +209,18 @@ export default class World {
 			this.hoverInEvents[object.name] = this.changeCursor(p.cursor)
 			this.hoverOutEvents[object.name] = this.changeCursor("default")
 		}
+		if(p.info) {
+			this.registerEvent(EventType.CLICK, object.name, ()=>{
+				HMap.showInfo(p.info)
+			})
+		}
 
+	}
+
+	canvasResize(){
+		this.camera.aspect = window.innerWidth / window.innerHeight
+		this.camera.updateProjectionMatrix()
+		this.renderer.setSize( window.innerWidth, window.innerHeight )
 	}
 
 	addFromFile = (path:string, props):Promise<string> => {
@@ -277,8 +289,8 @@ export default class World {
 		this.scene.add(ambient)*/
 	}
 	initCamera(){
-		this.camera = new Three.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 )
-		this.camera.position.set(0, 400, 400)
+		this.camera = new Three.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 10000 )
+		this.camera.position.set(0, 1400, 1400)
 		this.camera.up.set(0, 1, 0)
 		this.camera.lookAt(new Three.Vector3(0, 0, 0))
 		this.controls = new OrbitControls(this.camera)
