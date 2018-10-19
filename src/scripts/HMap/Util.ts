@@ -14,6 +14,10 @@ export default class Util {
 		});
 	}
 
+	static degToRad(deg: number){
+		return deg*(Math.PI/180)
+	}
+
 	/**
 	 * Removes the children of a node
 	 *

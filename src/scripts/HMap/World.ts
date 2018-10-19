@@ -44,7 +44,7 @@ export default class World {
 		this.raycaster = new Three.Raycaster()
 		this.fontLoader = new Three.FontLoader()
 		this.loader = new FBXLoader()
-		this.scene = new Three.Scene()
+		this.initScene()
 		this.initLight()
 		this.debugCube()
 		this.initCamera()
@@ -166,22 +166,38 @@ export default class World {
 		if (p.title) {
 			const titleGeom = new Three.TextGeometry(p.title,{
 				font: this.assets.fonts["default"],
-				size: 70,
+				size: p.fontSize || 70,
 				height: 1,
 				curveSegments: 12
 			})
 			const material = new Three.MeshBasicMaterial({
-				color: 0xffffff
+				color: p.textColor || 0xffffff
 			})
 			const titleMesh = new Three.Mesh(titleGeom, material)
 			this.scene.add(titleMesh)
 			const bbox = new Three.Box3().setFromObject(object)
-
-			const rot = object.rotation
-			const rad = 90*(Math.PI/180)
-			titleMesh.rotation.set(rot.x, rot.y, rot.z+rad)
+			const bboxtext = new Three.Box3().setFromObject(titleMesh)
+			// Vector from center 
+			const disp = new Three.Vector2(bboxtext.max.x - bboxtext.min.x, bboxtext.max.z - bboxtext.min.z)
+			titleMesh.rotation.copy(object.rotation)
 			titleMesh.position.copy(object.position)
-			titleMesh.position.y = bbox.max.y+5
+			titleMesh.position.y = bbox.max.y+3
+			if(p.titleRotation){
+				const x = Util.degToRad(p.titleRotation.x || 0)
+				const y = Util.degToRad(p.titleRotation.y || 0)
+				const z = Util.degToRad(p.titleRotation.z || 0)
+				titleMesh.rotateX(x)
+				titleMesh.rotateY(y)
+				titleMesh.rotateZ(z)
+			}
+			if(p.titleOffset){
+				const offset =new Three.Vector3(
+					p.titleOffset.x || 0, 
+					p.titleOffset.y || 0, 
+					p.titleOffset.z || 0
+				)
+				titleMesh.position.add(offset)
+			}
 		}
 		if (p.linkTo) {
 			this.registerEvent(EventType.CLICK, object.name, ()=>{
@@ -199,8 +215,10 @@ export default class World {
 		return new Promise((resolve, reject) => {
 			this.loader.load(path, (object) => {
 				for(const child of object.children) {
+					if(props["*"])
+						this.applyProperties(child, props["*"])
 					//For some reason all names have 'Model' appended
-					const name = child.name.slice(0,-5)
+					const name = child.name.slice(0,-5).toLowerCase()
 					if(props[name])
 						this.applyProperties(child, props[name])
 				}
@@ -236,18 +254,31 @@ export default class World {
 		this.scene.add(cube)
 	}
 
-	initLight(){
-		const light = new Three.DirectionalLight( 0xffffff, 0.7 )
-		light.position.y = 10
-		light.position.x = 2
-		this.scene.add(light)
+	initScene(){
+		this.scene = new Three.Scene()
+		this.scene.background = new Three.Color(0x333333)
+		this.scene.fog = new Three.Fog(0x333333, 500, 5000)
+		//const grid = new Three.GridHelper( 100, 10, 0xffffff)
+		//grid.material.opacity = 0.2
+		//grid.material.transparent = true
+		//this.scene.add( grid )
+	}
 
+	initLight(){
+		const hemi = new Three.HemisphereLight( 0xffffff, 0x444444 )
+		hemi.position.set( 0, 500, 0 )
+		this.scene.add( hemi )
+
+		const light = new Three.DirectionalLight( 0xffffff)
+		light.position.set(0, 500, 100)
+		this.scene.add(light)
+/*
 		const ambient = new Three.AmbientLight( 0xffffff, 0.3 )
-		this.scene.add(ambient)
+		this.scene.add(ambient)*/
 	}
 	initCamera(){
-		this.camera = new Three.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.01, 10000 )
-		this.camera.position.set(0, 200, 200)
+		this.camera = new Three.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 )
+		this.camera.position.set(0, 400, 400)
 		this.camera.up.set(0, 1, 0)
 		this.camera.lookAt(new Three.Vector3(0, 0, 0))
 		this.controls = new OrbitControls(this.camera)

@@ -13,6 +13,7 @@ type RenderCallback = (world:World) => Promise<any>
 
 export interface ControllerConfig{
 	title: string,
+	titleOffset?: {x:number, y:number},
 	render: string | object | RenderCallback,
 	controller?: typeof Controller,
 	backTo?: string,
