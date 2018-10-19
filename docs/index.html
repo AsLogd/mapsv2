@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+ 	<title>MapsV2 @ HackUPC</title>
+ 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+ 	<meta property="og:title" content="Maps @ HackUPC"/>
+ 	<meta property="og:site_name" content="Maps @ HackUPC"/>
+ 	<meta name="description" content="HackUPC ">
+	<meta property="og:description" content="Maps @ HackUPC"/>
+	<meta name="author" content="Hackers@UPC">
+	<link rel="stylesheet" type="text/css" href="assets/css/main.css">
+	<script src="assets/js/index.js"></script>
+	<!-- NOTE: use HTML imports in the future -->
+	<!-- MODALS -->
+	<template id="template-loading">
+		<div id="map-loading">
+			<img src="assets/images/loading.png">
+		</div>
+	</template>
+	<template id="template-info">
+		<div id="info" class="map-info">
+			
+		</div>
+	</template>
+	<template id="template-instructions-pc">
+		<div id="instructions-pc" class="map-info">
+			<ul>
+				<li>Click on green building: + info</li>
+				<li>Drag click: rotate</li>
+				<li>Mouse wheel: zoom</li>
+				<li>Right click: pan</li>
+			</ul>
+		</div>
+	</template>
+	<template id="template-instructions-mobile">
+		<!-- TODO: mobile controls-->
+		<div id="instructions-mobile" class="map-info">
+			<ul>
+				<li>Tap on green building: + info</li>
+				<li>Drag: rotate</li>
+				<li>Pinch: zoom</li>
+				<li>Drag 2 fingers: pan</li>
+			</ul>
+		</div>
+	</template>
+	<!-- TODO: markers
+	<template id="template-marker-menu">
+		<div id="marker-menu">
+			<label>Tag:</label>
+			<input type="text" id="map-markerTag">
+			<label>#</label>
+			<input type="color" id="map-markerColor">
+			<div class="map-buttons">
+				<div id="map-markerCancel">Cancel</div>
+				<div id="map-markerCreate">Create</div>
+			</div>
+		</div>-->
+	</template>
+	<!-- TODO: share menu
+	<template id="template-share-menu">
+		<div id="share-menu">
+			<label>Include markers:</label>
+			<input type="checkbox" id="map-includeMarkers">
+			<label>Camera position:</label>
+			<input type="checkbox" id="map-includeCameraPos">
+			<div class="map-buttons">
+				<div id="map-copyLink">Copy to clipboard!</div>
+			</div>
+		</div>
+	</template>-->
+	<!-- VIEWS  -->
+	<template id="template-map-floors">
+		<div id="map-floors">
+			<section class="panel">
+				<ul class="map-buttonList">
+					<li data-change-floor="" data-link-hash="^#\/[a-zA-Z0-9]+(\/)?$">*</li>
+					<li data-change-floor="3" data-link-hash="^#\/\w*(\/3)\b">2</li>
+					<li data-change-floor="2" data-link-hash="^#\/\w*(\/2)\b">1</li>
+					<li data-change-floor="1" data-link-hash="^#\/\w*(\/1)\b">E</li>
+					<li data-change-floor="0" data-link-hash="^#\/\w*(\/0)\b">0</li>
+				</ul>
+			</section>
+		</div>
+	</template>
+</head>
+<body>
+	<!-- Modal containers -->
+	<div id="map-modal" class="map-modal">
+		<div id="map-loading">
+			<img src="assets/images/loading.png">
+		</div>
+	</div>
+	<!-- Map UI -->
+	<main id="map-ui">
+		<header>
+			<a id="liveLink" href="http://hackupc.com/live">Live</a>
+			<div id="map-out" class="notdisplayed hidden map-button"><span>❮</span></div>
+			<h1 id="map-routeHeader">HackUPC</h1>
+			<div id="map-helpbtn" class="map-button">?</div>
+		</header>
+		<!-- TODO: markers-->
+		<div id="map-markerInfo" class="map-infoLine notdisplayed hidden">
+			<h2>Select marker location</h2>
+		</div>
+		<!-- Route view (if any) -->
+		<article id="map-view" class="notdisplayed hidden">
+			
+		</article>
+		<footer>
+			<!-- TODO: markers
+			<div id="map-opts-list" class="notdisplayed hidden">
+				<ul>
+					<li id="map-addMarker">Add marker</li>
+					<li id="map-reset">Reset</li>
+					<li id="map-save">Save</li>
+					<li id="map-share">Share</li>
+				</ul>
+			</div>
+			<div id="map-opts" class="map-button">+</div>-->
+		</footer>
+	</main>
+
+</body>
+</body>
+</html>
