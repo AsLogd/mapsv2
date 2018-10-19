@@ -1,0 +1,95 @@
+/* TODO: determine classes that need transition */
+*{
+	transition: opacity 200ms;
+}
+
+html, body{
+	width:100%;
+	height:100%;
+	margin:0;
+	padding:0;
+	background-color:#333;
+	touch-action: none;
+	font-family: sans-serif;
+	user-select: none;
+	-webkit-tap-highlight-color: transparent;
+}
+canvas{
+	z-index:1;
+}
+
+.hidden{
+	opacity:0;
+	transition: opacity 200ms;
+}
+
+.notdisplayed{
+	display: none !important;
+}
+
+#map-ui{
+	width:100%;
+	position:absolute;
+	top:0;
+	left:0;
+	z-index:2;
+	header{
+		background-color: #E91753;
+		h1#map-routeHeader{
+			color: white;
+			text-align: center;
+			margin:0;
+			padding: 5px;
+		}
+	}
+	article#map-view{
+		display:flex;
+	}
+	.map-button{
+		position: fixed;
+		width: 40px;
+		height: 40px;
+		border-radius: 25px;
+		margin: 20px;
+		padding: 5px;
+
+		font-size: 30px;
+		font-weight: bold;
+		text-align: center;
+		vertical-align: middle;
+
+		cursor: pointer;
+		z-index: 2;
+		background-color: #E91753;
+		color: white;
+	}
+}
+
+
+.map-modal{
+	position: absolute;
+	width: 100%;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	display: flex;
+	background-color: rgba(190, 211, 215, 0.7);
+	z-index:3;
+	
+	div.map-info{
+		padding: 20px;
+		background-color: #E91753;
+		color: rgba(255,255,255,0.9);
+		margin: 20px;
+		box-shadow: 0 5px 20px 3px rgba(0, 0, 0, 0.2);
+		ul{
+			list-style: none;
+			padding: 0;
+		}
+	}
+
+	#map-loading img{
+		width: 25vh;
+	}
+
+}

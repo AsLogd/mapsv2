@@ -60,7 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			"/:building/:floor": {
 				title: "{building}",
 				controller: BuildingController,
-				viewId: "map-floors",
+				backTo: "/",
+				viewId: "template-map-floors",
 				render: "assets/models/{building}-{floor}.fbx",
 				props: function(params){
 					return buildingProps[params.building][params.floor]
@@ -69,11 +70,13 @@ document.addEventListener('DOMContentLoaded', () => {
 			"/:building": {
 				title: "{building}",
 				controller: BuildingController,
-				viewId: "map-floors",
+				backTo: "/",
+				viewId: "template-map-floors",
 				render: {
 					"0": "assets/models/{building}-0.fbx",
 					"1": "assets/models/{building}-1.fbx",
 					"2": "assets/models/{building}-2.fbx",
+					"3": "assets/models/{building}-3.fbx"
 				},
 				props: function(params){
 					return buildingProps[params.building]

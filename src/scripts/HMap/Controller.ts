@@ -1,6 +1,7 @@
 import * as Three from "three"
 import Util from "./Util"
 import World from "./World"
+import HMap from "./HMap"
 import {MatchedRoute} from "./Router"
 
 /**
@@ -14,44 +15,84 @@ export interface ControllerConfig{
 	title: string,
 	render: string | object | RenderCallback,
 	controller?: typeof Controller,
+	backTo?: string,
 	viewId?: string,
 	props?: object | PropsCallback
 }
 
 export default class Controller{
-	private readonly TITLE_ID: string = "map-routeHeader"
 	config: ControllerConfig
 	params: any
 
 	constructor(matching: MatchedRoute){
 		this.config = matching.config
 		this.params = matching.params
+		
 		const formattedTitle = Util.format(
 			matching.config.title,
 			matching.params
 		)
 		this.setTitle(formattedTitle)
+		if (this.config.backTo) {
+			const btn = document.getElementById(HMap.BACK_ID)
+			btn.dataset.backTo = this.config.backTo
+			Util.show("#"+HMap.BACK_ID)
+		}
 	}
 
+	/**
+	 * Sets the view title
+	 *
+	 * @arg {string} title - The new title
+	 */
 	setTitle(title:string){
-		document.getElementById(this.TITLE_ID).innerHTML = title
+		document.getElementById(HMap.TITLE_ID).innerHTML = title
 	}
 
-	hiding(): Promise<any> {
+	/**
+	 * Clones the template into the view container
+	 *
+	 * @arg {string} templateId - The id of the template to be imported
+	 */
+	importTemplate(templateId:string): void {
+		const view = document.getElementById(HMap.VIEW_CONTAINER_ID)
+		const template = <HTMLTemplateElement>document.getElementById(templateId)
+		Util.replaceTemplate(view, template)
+	}
+
+	/**
+	 * Hides the view and empties the view container
+	 * Also hides the back button
+	 */
+	hiding(): Promise<void> {
+		Util.hide("#"+HMap.BACK_ID)
 		if (!this.config.viewId) 
 			return Promise.resolve()
 
-		return Util.hide("#"+this.config.viewId)
+		return Util.hide("#"+HMap.VIEW_CONTAINER_ID).then(()=>{
+			Util.emptyNode(
+				document.getElementById(HMap.VIEW_CONTAINER_ID)
+			)
+		})
 	}
 
-	showing(): Promise<any> {
+	/**
+	 * Imports and shows the template specified in the config
+	 */
+	showing(): Promise<void> {
 		if (!this.config.viewId) 
 			return Promise.resolve()
 
-		return Util.show("#"+this.config.viewId)
+		this.importTemplate(this.config.viewId)
+		return Util.show("#"+HMap.VIEW_CONTAINER_ID)
 	}
 
-	init(world:World): Promise<any>{
+	/**
+	 * Renders the scene specified by the config into the world
+	 *
+	 * @arg {World} world - The world where the scene will be rendered
+	 */
+	initScene(world:World): Promise<any>{
 		if(typeof this.config.render === "object") {
 			const ps = []
 			for(const key in this.config.render) {

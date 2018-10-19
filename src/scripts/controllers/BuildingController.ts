@@ -9,4 +9,19 @@ export default class BuildingController extends Controller {
 			)
 		}
 	}
+
+	showing(): Promise<void>{
+		return super.showing().then(()=>{
+			const elems = document.querySelectorAll("[data-change-floor]")
+			for(let i = 0; i < elems.length; i++) {
+				((elem) => {
+					elem.addEventListener("click", (ev:Event) => {
+						const btn = <HTMLElement>ev.currentTarget
+						const floor = btn.dataset.changeFloor
+						location.hash = `/${this.params.building}/${floor}`
+					})
+				})(elems[i])
+			}
+		})
+	}
 }
