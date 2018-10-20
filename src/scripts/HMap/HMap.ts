@@ -143,7 +143,7 @@ export default class HMap{
 		Util.addEvent(HMap.HELPBTN_ID, "click", ()=>{
 			this.showModal(HMap.PC_HELP_MODAL_ID)
 		})
-		Util.addEvent(HMap.HELPBTN_ID, "touchstart", ()=>{
+		Util.addEvent(HMap.HELPBTN_ID, "tap", ()=>{
 			this.showModal(HMap.MOBILE_HELP_MODAL_ID)
 		})
 		Util.addEvent(HMap.MODAL_CONTAINER_ID, "click", ()=>{
