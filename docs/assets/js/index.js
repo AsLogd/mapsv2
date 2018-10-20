@@ -106788,25 +106788,18 @@ document.addEventListener('DOMContentLoaded', () => {
             defaultFont: "assets/fonts/gotham.json"
         },
         routes: {
-            "/A5/0": {
-                title: "A5",
-                controller: BuildingController_1.default,
-                backTo: "/",
-                viewId: "template-map-floors",
-                render: {
-                    "floor": "assets/models/AX0.fbx",
-                    "info": "assets/models/entresol.fbx"
-                },
-                props: function (params) {
-                    return buildingProps["a5"]["0"];
-                }
-            },
             "/:building/:floor": {
                 title: "{building}",
                 controller: BuildingController_1.default,
                 backTo: "/",
                 viewId: "template-map-floors",
                 render: (params) => {
+                    if (params.building === "A5" && parseInt(params.floor) == 0) {
+                        return {
+                            "floor": "assets/models/AX0.fbx",
+                            "info": "assets/models/entresol.fbx"
+                        };
+                    }
                     if (parseInt(params.floor) > 1) {
                         if (params.building === "A5" || params.building === "A6") {
                             return "assets/models/A6{floor}.fbx";
@@ -106970,6 +106963,15 @@ document.addEventListener('DOMContentLoaded', () => {
                             x: 90
                         },
                         info: "This building will hold the open and end ceremonies"
+                    },
+                    "meals": {
+                        title: "Meal zone",
+                        color: "#733",
+                        fontSize: 20,
+                        titleOffset: {
+                            x: -4 * 20,
+                            z: 6
+                        }
                     }
                 }
             }
