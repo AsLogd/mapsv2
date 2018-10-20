@@ -167,10 +167,10 @@ document.addEventListener('DOMContentLoaded', () => {
 					base:bases.default
 				},
 				"e01": {
-					base:bases.closed	
+					base:bases.closed
 				},
 				"e02": {
-					base:bases.closed	
+					base:bases.closed
 				}
 			},
 			"2": {
@@ -186,19 +186,19 @@ document.addEventListener('DOMContentLoaded', () => {
 					fontSize: 25
 				},
 				"102": {
-					base:bases.hackingRoom	
+					base:bases.hackingRoom
 				},
 				"103": {
-					base:bases.hackingRoom	
+					base:bases.hackingRoom
 				},
 				"104": {
-					base:bases.hackingRoom	
+					base:bases.hackingRoom
 				},
 				"105": {
-					base:bases.hackingRoom	
+					base:bases.hackingRoom
 				},
 				"106": {
-					base:bases.hackingRoom	
+					base:bases.hackingRoom
 				}
 			},
 			"3": {
@@ -212,16 +212,16 @@ document.addEventListener('DOMContentLoaded', () => {
 					base: bases.sleeping
 				},
 				"203": {
-					base:bases.sleeping	
+					base:bases.sleeping
 				},
 				"204": {
-					base:bases.sleeping	
+					base:bases.sleeping
 				},
 				"205": {
-					base:bases.sleeping	
+					base:bases.sleeping
 				},
 				"206": {
-					base:bases.sleeping	
+					base:bases.sleeping
 				}
 			}
 		},
@@ -271,16 +271,16 @@ document.addEventListener('DOMContentLoaded', () => {
 					base:bases.hackingRoom
 				},
 				"103": {
-					base:bases.hackingRoom	
+					base:bases.hackingRoom
 				},
 				"104": {
-					base:bases.hackingRoom	
+					base:bases.hackingRoom
 				},
 				"105": {
-					base:bases.hackingRoom	
+					base:bases.hackingRoom
 				},
 				"106": {
-					base:bases.hackingRoom	
+					base:bases.hackingRoom
 				}
 			},
 			"3": {
@@ -291,16 +291,16 @@ document.addEventListener('DOMContentLoaded', () => {
 					base: bases.hackingRoom
 				},
 				"203": {
-					base:bases.hackingRoom	
+					base:bases.hackingRoom
 				},
 				"204": {
-					base:bases.hackingRoom	
+					base:bases.hackingRoom
 				},
 				"205": {
-					base:bases.hackingRoom	
+					base:bases.hackingRoom
 				},
 				"206": {
-					base:bases.hackingRoom	
+					base:bases.hackingRoom
 				}
 			}
 		},
@@ -335,13 +335,13 @@ document.addEventListener('DOMContentLoaded', () => {
 					base:bases.hackingRoom
 				},
 				"103": {
-					base:bases.hackingRoom	
+					base:bases.hackingRoom
 				},
 				"104": {
-					base:bases.hackingRoom	
+					base:bases.hackingRoom
 				},
 				"105": {
-					base:bases.hackingRoom	
+					base:bases.hackingRoom
 				},
 				"106": {
 					color: "brown",
@@ -360,16 +360,16 @@ document.addEventListener('DOMContentLoaded', () => {
 					base: bases.hackingRoom
 				},
 				"203": {
-					base:bases.hackingRoom	
+					base:bases.hackingRoom
 				},
 				"204": {
-					base:bases.hackingRoom	
+					base:bases.hackingRoom
 				},
 				"205": {
-					base:bases.hackingRoom	
+					base:bases.hackingRoom
 				},
 				"206": {
-					base:bases.hackingRoom	
+					base:bases.hackingRoom
 				}
 			}
 		}
@@ -379,31 +379,25 @@ document.addEventListener('DOMContentLoaded', () => {
 			defaultFont: "assets/fonts/gotham.json"
 		},
 		routes:{
-			"/A5/0": {
-				title: "A5",
-				controller: BuildingController,
-				backTo: "/",
-				viewId: "template-map-floors",
-				render: {
-					"floor": "assets/models/AX0.fbx",
-					"info": "assets/models/entresol.fbx"
-				},
-				props: function(params){
-					return buildingProps["a5"]["0"]
-				}
-			},
 			"/:building/:floor": {
 				title: "{building}",
 				controller: BuildingController,
 				backTo: "/",
 				viewId: "template-map-floors",
 				render: (params) => {
+					if (params.building === "A5" && parseInt(params.floor) === 0) {
+						return {
+							"floor": "assets/models/AX0.fbx",
+							"info": "assets/models/entresol.fbx"
+						}
+					}
+
 					if(parseInt(params.floor) > 1)
 					{
 						if(params.building === "A5" || params.building === "A6")
 						{
 							return "assets/models/A6{floor}.fbx"
-						} 
+						}
 					}
 
 					return "assets/models/AX{floor}.fbx"
@@ -428,7 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
 					{
 						files["2"] = "assets/models/A62.fbx"
 						files["3"] = "assets/models/A63.fbx"
-					} 
+					}
 
 					return files
 				},
