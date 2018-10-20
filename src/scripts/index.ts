@@ -385,7 +385,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				backTo: "/",
 				viewId: "template-map-floors",
 				render: (params) => {
-					if (params.building === "A5" && parseInt(params.floor) == 0) {
+					if (params.building === "A5" && parseInt(params.floor) === 0) {
 						return {
 							"floor": "assets/models/AX0.fbx",
 							"info": "assets/models/entresol.fbx"
